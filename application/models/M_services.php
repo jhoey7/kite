@@ -18,9 +18,6 @@ class M_services extends CI_Model {
 				if (strtoupper($value['tipe_file']) === "IN" || strtoupper($value['tipe_file']) === "OUT") {
 
 					$arrbrg['kd_brg'] = $value['kode_barang'];
-					$arrbrg['jns_brg'] = $value['jenis_barang'];
-					$arrbrg['nm_brg'] = $value['uraian_barang'];
-					$arrbrg['kd_hs'] = $value['kode_hs'];
 					$arrbrg['kd_satuan'] = $value['kode_satuan'];
 					$arrbrg['kd_gudang'] = $value['kode_gudang'];
 					$arrbrg['kode_trader'] = $value['kode_trader'];
@@ -50,6 +47,11 @@ class M_services extends CI_Model {
 						continue;
 					} elseif ($saldo_kurang == true) {
 						$this->db->set("msg_error","saldo barang kurang untuk di keluarkan, silahkan periksa saldo barang di Inventory->Data Barang");
+						$this->db->where(array("id"=>$value['id_dtl']));
+						$this->db->update("t_temp_services_dtl");
+						continue;
+					} elseif ($databarang == false) {
+						$this->db->set("msg_error","kode barang tidak dikenali, periksa kembali kode satuan barangnya di Inventory->Data Barang");
 						$this->db->where(array("id"=>$value['id_dtl']));
 						$this->db->update("t_temp_services_dtl");
 						continue;
@@ -421,13 +423,12 @@ class M_services extends CI_Model {
 	}
 
 	private function get_data_barang($arrbrg) {
-		$qry = "SELECT b.id_barang, b.id_gudang, b.saldo, a.kd_satuan, a.kd_satuan_terkecil, a.nilai_konversi 
+		$qry = "SELECT b.id_barang, b.id_gudang, b.saldo, a.kd_satuan, a.kd_satuan_terkecil, a.nilai_konversi, a.jns_brg
 				FROM tm_barang a 
 				LEFT JOIN tm_barang_gudang b on a.id = b.id_barang 
 				LEFT JOIN tm_warehouse c ON c.id = b.id_gudang 
 				WHERE a.kode_trader = " . $this->db->escape($arrbrg['kode_trader']) . " 
 				AND a.kd_brg = " . $this->db->escape($arrbrg['kd_brg']) . " 
-				AND a.jns_brg = " . $this->db->escape($arrbrg['jns_brg']) . " 
 				AND c.kode = " . $this->db->escape($arrbrg['kd_gudang']);
 
 		$rslt = $this->db->query($qry);
@@ -442,103 +443,13 @@ class M_services extends CI_Model {
 			} else {
 				$return['jml_satuan'] = $data['nilai_konversi'] * $arrbrg['jml_satuan'];
 			}
+			$return['jns_brg'] = $data['jns_brg'];
 			$return['id_barang'] = $data['id_barang'];
 			$return['id_gudang'] = $data['id_gudang'];
 			$return['saldo']  = $data['saldo'];
 			return $return;
 		} else {
-			$qry = "SELECT id FROM tm_warehouse WHERE kode_trader = " . $this->db->escape($arrbrg['kode_trader']) . " AND kode = " . $this->db->escape($arrbrg['kd_gudang']);
-			$rslt = $this->db->query($qry);
-			if ($rslt->num_rows() > 0) {
-				$gudang = $rslt->row();
-				$id_gudang = $gudang->id;
-
-				$qry = "SELECT id, kd_satuan, kd_satuan_terkecil, nilai_konversi FROM tm_barang WHERE kode_trader = ".$this->db->escape($arrbrg['kode_trader'])." AND kd_brg = ".$this->db->escape($arrbrg['kd_brg'])." AND jns_brg = ".$this->db->escape($arrbrg['jns_brg']);
-
-				$rslt = $this->db->query($qry);
-				if($rslt->num_rows() > 0) {
-					$barang = $rslt->row();
-					$id_barang = $barang->id;
-
-					if ($arrbrg['kd_satuan'] != $barang->kd_satuan) {
-						if ($arrbrg['kd_satuan'] != $barang->kd_satuan_terkecil) {
-							return "satuan tidak dikenali";
-						} else {
-							$return['jml_satuan'] = $arrbrg['jml_satuan'];
-						}
-					} else {
-						$return['jml_satuan'] = $barang->nilai_konversi * $arrbrg['jml_satuan'];
-					}
-				} else {
-					$this->db->insert("tm_barang", array(
-						"kd_brg"=> $arrbrg['kd_brg'],
-						"jns_brg"=> $arrbrg['jns_brg'],
-						"nm_brg"=> $arrbrg['nm_brg'],
-						"nilai_konversi"=> 1,
-						"kd_hs"=> $arrbrg['kd_hs'],
-						"kd_satuan_terkecil"=> $arrbrg['kd_satuan'],
-						"kd_satuan"=> $arrbrg['kd_satuan'],
-						"kode_trader"=> $arrbrg['kode_trader']
-					));
-					$id_barang = $this->db->insert_id();
-				
-					$return['jml_satuan'] = $arrbrg['jml_satuan'];
-				}
-				
-				$this->db->insert("tm_barang_gudang", array("id_barang"=>$id_barang, "id_gudang"=>$id_gudang));
-
-				$return['id_barang'] = $id_barang;
-				$return['id_gudang'] = $id_gudang;
-				$return['saldo']  = 0;
-				return $return;
-			} else {
-				$this->db->insert("tm_warehouse", array(
-					"kode"=>$arrbrg['kd_gudang'], 
-					"nama"=>$arrbrg['kd_gudang'],
-					"uraian"=>"-",
-					"kode_trader"=>$arrbrg['kode_trader']
-				));
-				$id_gudang = $this->db->insert_id();
-
-				$qry = "SELECT id FROM tm_barang WHERE kode_trader = ".$this->db->escape($arrbrg['kode_trader'])." AND kd_brg = ".$this->db->escape($arrbrg['kd_brg'])." AND jns_brg = ".$this->db->escape($arrbrg['jns_brg']);
-
-				$rslt = $this->db->query($qry);
-				if($rslt->num_rows() > 0) {
-					$barang = $rslt->row();
-					$id_barang = $barang->id;
-
-					if ($arrbrg['kd_satuan'] != $barang->kd_satuan) {
-						if ($arrbrg['kd_satuan'] != $barang->kd_satuan_terkecil) {
-							return "satuan tidak dikenali";
-						} else {
-							$return['jml_satuan'] = $arrbrg['jml_satuan'];
-						}
-					} else {
-						$return['jml_satuan'] = $barang->nilai_konversi * $arrbrg['jml_satuan'];
-					}
-				} else {
-					$this->db->insert("tm_barang", array(
-						"kd_brg"=> $arrbrg['kd_brg'],
-						"jns_brg"=> $arrbrg['jns_brg'],
-						"nm_brg"=> $arrbrg['nm_brg'],
-						"nilai_konversi"=> 1,
-						"kd_hs"=> $arrbrg['kd_hs'],
-						"kd_satuan_terkecil"=> $arrbrg['kd_satuan'],
-						"kd_satuan"=> $arrbrg['kd_satuan'],
-						"kode_trader"=> $arrbrg['kode_trader']
-					));
-					$id_barang = $this->db->insert_id();
-
-					$return['jml_satuan'] = $arrbrg['jml_satuan'];
-				}
-				
-				$this->db->insert("tm_barang_gudang", array("id_barang"=>$id_barang, "id_gudang"=>$id_gudang));
-				
-				$return['id_barang'] = $id_barang;
-				$return['id_gudang'] = $id_gudang;
-				$return['saldo']  = 0;
-				return $return;
-			}
+			return false;
 		}
 	}
 

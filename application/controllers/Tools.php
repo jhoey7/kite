@@ -13,6 +13,7 @@ class Tools extends CI_Controller {
   			$headers .= '<link rel="stylesheet" href="'.base_url().'assets/css/bootstrap-timepicker.min.css" />';
   			$headers .= '<link rel="stylesheet" href="'.base_url().'assets/sweetalert/sweetalert.css">';
   			$headers .= '<link rel="stylesheet" href="'.base_url().'assets/css/alerts.css">';
+  			$headers .= '<link rel="stylesheet" href="'.base_url().'assets/css/newtable.css">';
   			$headers .= '<link rel="stylesheet" href="'.base_url().'assets/css/jquery.gritter.css">';
 			$headers .= '<script src="'.base_url().'assets/js/jquery-1.10.2.min.js"></script>';
 			
@@ -28,6 +29,7 @@ class Tools extends CI_Controller {
 			$footers .= '<script src="'.base_url().'assets/js/bootstrap-timepicker.min.js"></script>';
 			$footers .= '<script src="'.base_url().'assets/js/alerts.js"></script>';
 			$footers .= '<script src="'.base_url().'assets/js/main.js"></script>';
+			$footers .= '<script src="'.base_url().'assets/js/newtable.js"></script>';
 			$footers .= '<script src="'.base_url().'assets/js/jquery.gritter.min.js"></script>';
 			$footers .= '<script src="'.base_url().'assets/js/custom.js"></script>';
 			if ($this->content=="") {
@@ -54,10 +56,31 @@ class Tools extends CI_Controller {
 	}
 
 	public function setting() {
+		if(!$this->session->userdata('LOGGED')) {
+			$this->index();
+			return;
+		}
 		$this->load->model("m_execute","model");
 		$arrdata['data'] = $this->model->get_data('setting');
 		$this->content = $this->load->view('tools/setting',$arrdata,true);
 		$this->breadcrumbs = array("title"=>"Tools","icon"=>"wrench","title_child"=>"Advance Setting","url"=>'tools/setting');
 		$this->index();
+	}
+
+	function logapi() {
+		if(!$this->session->userdata('LOGGED')) {
+			$this->index();
+			return;
+		}
+		$this->breadcrumbs = array("title"=>"Tools","icon"=>"suitcase","wrench"=>"Log API","url"=>'tools/logapi');
+		$this->load->model('m_table','model');
+		$arrdata = $this->model->logapi();
+		$data = $this->content = $this->load->view('view-table', $arrdata, true);
+		if ($this->input->post("ajax")) {
+			echo $arrdata;
+		} else {
+			$this->content = $data;
+			$this->index();
+		}
 	}
 }

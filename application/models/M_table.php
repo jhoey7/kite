@@ -835,4 +835,34 @@ class M_table extends CI_Model {
 		else
 			return $arrdata;
 	}
+
+	function logapi() {
+		$header = "Data Log API's";
+		$header_content = "Menampilkan seluruh data Log API services.";
+		$this->load->library('newtable');
+		$SQL = "SELECT message, CONCAT('<div style=\"width:600px;\">',data,'</div>') AS data, DATE_FORMAT(created_time, '%Y-%m-%d %H:%i:%s') as 'time', id from t_temp_log_services";
+		$proses = array();
+		$this->newtable->show_search(false);
+		$this->newtable->show_chk(false);
+		$this->newtable->show_menu(false);
+		$this->newtable->show_search(false);
+		$this->newtable->action(site_url() . "/tools/logapi");
+		$this->newtable->tipe_proses('button');
+		$this->newtable->hiddens(array('id'));
+		$this->newtable->keys(array("id"));
+		$this->newtable->cidb($this->db);
+		$this->newtable->orderby("id");
+		$this->newtable->sortby("ASC");
+		$this->newtable->set_formid("tbllogapi");
+		$this->newtable->set_divid("divtbllogapi");
+		$this->newtable->rowcount(10);
+		$this->newtable->clear();
+		$this->newtable->menu($proses);
+		$tabel .= $this->newtable->generate($SQL);
+		$arrdata = array("header" => $header, "header_content" => $header_content, "content" => $tabel);
+		if($this->input->post("ajax"))
+			return $tabel;
+		else
+			return $arrdata;
+	}
 }

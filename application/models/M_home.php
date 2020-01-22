@@ -44,6 +44,8 @@ class M_home extends CI_Model {
 	// }
 
 	function signin($uid_, $pwd_){
+		$func = get_instance();
+        $func->load->model("m_main", "main", true);
 		$query="SELECT a.id, a.nama, a.alamat, a.telepon, a.email, a.status, a.user_role, b.uraian, a.password, a.kode_trader, c.tipe_dokumen,
 				c.nama as nama_perusahaan, c.fasilitas_perusahaan as fas_pabean, a.status as status_perusahaan, c.format_currency, c.format_qty, c.show_aju
 				FROM tm_user a 
@@ -81,6 +83,7 @@ class M_home extends CI_Model {
 					}
 					date_default_timezone_set('Asia/Jakarta');
 					$this->session->set_userdata($datses);
+					$func->main->get_log("login","");
 					return 1;
 				}
 			} else {

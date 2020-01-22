@@ -54,15 +54,8 @@
 			    <div class="btn-group">
 				    <a href="javascript:void(0);" class="btn btn-primary" onclick="Laporan('frm_laporan', 'table-laporan','<?php echo site_url('report/proses/pemasukan_bb');?>','laporan');"><i class="fa fa-search"></i>&nbsp;Search</a>
 				    <button type="reset" class="btn btn-default"><i class="fa fa-undo"></i>&nbsp;Reset</button>
-				    <div class="btn-group">
-				        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-				            Export <span class="caret"></span>
-				        </button>
-				        <ul class="dropdown-menu" role="menu">
-				            <li><a href="javascript:void(0);" onClick="print_report('pemasukan_bb','pdf')">PDF</a></li>
-				            <li><a href="javascript:void(0);" onClick="print_report('pemasukan_bb','xls')">XLS</a></li>
-				        </ul>
-				    </div>
+				    <a href="javascript:void(0);" class="btn btn-danger" onclick="print_report('pemasukan_bb','pdf')"><i class="fa fa-printer"></i>&nbsp;Search</a>
+				    <a href="javascript:void(0);" class="btn btn-success" onclick="print_report('pemasukan_bb','xls')"><i class="fa fa-printer"></i>&nbsp;Search</a>
 			    </div>
 			</div>
 			<div class="table-responsive table-laporan"></div>

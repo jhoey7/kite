@@ -75,47 +75,24 @@ class M_main extends CI_Model {
 		return $data;
 	}	
 	
-	function get_log($type,$table){
+	function get_log($type,$table=""){
 		$arrdata = array();
 		switch($type){
 			case "add"	  : 
-				$string = "Berhasil <b>menambah</b> data pada tabel ".$table." dengan data sebagai berikut :";
-				foreach($_POST as $data => $val){
-					if(is_array($val)){
-						foreach($val as $data2 => $val2){
-							$arrdata[] = "<li>".$data2." = ".$val2."</li>";
-						}
-					}else{
-						$arrdata[] = "<li>".$data." = ".$val."</li>";
-					}
-				}
+				$string = "Berhasil <b>menambah</b> data pada tabel ".$table." dengan data sebagai berikut : <br/>";
+				$arrdata = json_encode($_POST);
 			break;
 			case "update" : 
-				$string = "Berhasil <b>mengupdate</b> data pada tabel ".$table." dengan data sebagai berikut :";
-				foreach($_POST as $data => $val){
-					if(is_array($val)){
-						foreach($val as $data2 => $val2){
-							$arrdata[] = "<li>".$data2." = ".$val2."</li>";
-						}
-					}else{
-						$arrdata[] = "<li>".$data." = ".$val."</li>";
-					}
-				}
+				$string = "Berhasil <b>mengupdate</b> data pada tabel ".$table." dengan data sebagai berikut : <br/>";
+				$arrdata = json_encode($_POST);
 			break;
 			case "delete" : 
-				$string = "Berhasil <b>menghapus</b> data pada tabel ".$table." dengan data sebagai berikut :";
-				foreach($_POST as $data => $val){
-					if(is_array($val)){
-						foreach($val as $data2 => $val2){
-							$arrdata[] = "<li> ID = ".$val2."</li>";
-						}
-					}else{
-						$arrdata[] = "<li> ID = ".$val."</li>";
-					}
-				}
+				$string = "Berhasil <b>menghapus</b> data pada tabel ".$table." dengan data sebagai berikut : <br/>";
+				$arrdata = json_encode($_POST);
 			break;
-			case "realisasi" :
-
+			case "login" :
+				$string = "Berhasil <b>Login</b> dengan data sebagai berikut : <br/>";
+				$arrdata = json_encode($_POST);
 			break;
 			case "read" : 
 				$string = "Berhasil <b>membaca</b> data ".$table;
@@ -124,7 +101,7 @@ class M_main extends CI_Model {
 		$data = array(
 			"IP_ADDRESS" => $this->getIP(0),
 			"ACTION"=>strtoupper($type),
-			"REMARK" => $string."<ul>".implode($arrdata)."</ul>",
+			"REMARK" => $string. "<code>".$arrdata."</code>",
 			"WK_REKAM" => date("Y-m-d H:i:s"),
 			"USER_ID" => $this->session->userdata('ID'),
 			"KODE_TRADER" => $this->session->userdata('KODE_TRADER')

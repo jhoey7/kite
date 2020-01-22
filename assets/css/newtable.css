@@ -9,8 +9,8 @@ table.tabelajax tr.head .labelload{color:#777777;display:none;}
 table.tabelajax tr.headcontent .labelload{color:#777777;display:none;}
 table.tabelajax tr.head span{float:right;}
 table.tabelajax tr.headcontent span{float:right;}
-table.tabelajax td{color: #4c4c4c;padding:5px;background-color: #FFFFFF;border-bottom:1px solid #eee;border-left:1px solid #eee;cursor:pointer; font-size:12px;}
-table.tabelajax tr.hilite td{background-color:#D9E3EF;}table.tabelajax tr.hilites td{background-color:#D9E3EF;}
+table.tabelajax td{color: #4c4c4c;padding:5px;background-color: #FFFFFF;border-bottom:1px solid #eee;border-left:1px solid #eee;cursor:pointer; font-size:12px;word-wrap: break-word;}
+table.tabelajax tr.hilite td{background-color:#D9E3EF;}table.tabelajax tr.hilites td{background-color:#D9E3EF;word-wrap: break-word;}
 table.tabelajax td.odd{background-color:#F9F9F9;}
 table.tabelajax td.alt{background-color:#FFFFFF;}
 table.tabelajax tr.selected td{background-color:#d9e3ef;}

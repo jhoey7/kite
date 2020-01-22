@@ -27,7 +27,7 @@ class Pabean extends \Restserver\Libraries\REST_Controller
             $_POST = $this->security->xss_clean($_POST);
             $headers = $this->input->request_headers();
 
-            $checkTPB = $this->model->check_data_tpb($this->post('tipe_file'), $this->post('nomor_dok_internal'), $this->post('tanggal_dok_internal'), $is_valid_token['data']->kode_trader);
+            // $checkTPB = $this->model->check_data_tpb($this->post('tipe_file'), $this->post('nomor_dok_internal'), $this->post('tanggal_dok_internal'), $is_valid_token['data']->kode_trader);
 
             $error = 0;
 
@@ -45,10 +45,10 @@ class Pabean extends \Restserver\Libraries\REST_Controller
                 $error += 1;
             } 
 
-            if ($checkTPB) {
-                $message['data_exist'] = "Nomor & Tanggal Dokumen Internal sudah ada.";
-                $error += 1;
-            }
+            // if ($checkTPB) {
+            //     $message['data_exist'] = "Nomor & Tanggal Dokumen Internal sudah ada.";
+            //     $error += 1;
+            // }
 
             if (!in_array($this->post('tipe_file'), array("IN","OUT"))) {
                 $message['tipe_file'] = "Tipe file tidak di kenali";
@@ -65,12 +65,12 @@ class Pabean extends \Restserver\Libraries\REST_Controller
                 $error += 1;
             } 
 
-            if (empty($this->post('nomor_daftar'))) {
+            if (empty($this->post('nomor_daftar')) && $this->post('kode_dokumen') != "LOKAL") {
                 $message['nomor_daftar'] = "Nomor Daftar harus diisi";
                 $error += 1;
             } 
 
-            if (empty($this->post('tanggal_daftar'))) {
+            if (empty($this->post('tanggal_daftar')) && $this->post('kode_dokumen') != "LOKAL") {
                 $message['tanggal_daftar'] = "Tanggal Daftar harus diisi";
                 $error += 1;
             } 
@@ -82,11 +82,6 @@ class Pabean extends \Restserver\Libraries\REST_Controller
 
             if (empty($this->post('tanggal_dok_internal'))) {
                 $message['tanggal_dok_internal'] = "Tanggal Dokumen Internal harus diisi";
-                $error += 1;
-            } 
-
-            if ($this->post('tipe_file') == "IN" AND empty($this->post('id_vendor')) AND empty($this->post('nama_vendor'))) {
-                $message['vendor'] = "ID/Nama Vendor harus diisi";
                 $error += 1;
             } 
 
@@ -114,11 +109,6 @@ class Pabean extends \Restserver\Libraries\REST_Controller
 
                 if(empty($details[$i]['kode_barang'])) {
                     $message['kode_barang_'.$i] = "Kode barang harus diisi";
-                    $error += 1;
-                } 
-
-                if(empty($details[$i]['jenis_barang'])) {
-                    $message['jenis_barang_'.$i] = "Jenis barang harus diisi";
                     $error += 1;
                 } 
 
@@ -154,11 +144,6 @@ class Pabean extends \Restserver\Libraries\REST_Controller
 
                 if(empty($details[$i]['kode_negara'])) {
                     $message['kode_negara_'.$i] = "Kode negara harus diisi";
-                    $error += 1;
-                } 
-
-                if(empty($details[$i]['asal_barang'])) {
-                    $message['asal_barang_'.$i] = "Asal barang harus diisi";
                     $error += 1;
                 }
             }
