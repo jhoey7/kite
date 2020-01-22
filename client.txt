@@ -1,0 +1,4 @@
+_host=http://localhost:8080/kite/index.php/api
+_user=admin.essar@gmail.com
+_password=123abc
+_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjMiLCJrb2RlX3RyYWRlciI6IjYiLCJtZXRvZGVfcmVhbCI6IjEiLCJmYXNfY29tcCI6IjMiLCJzaG93X2FqdSI6Ik4iLCJ0aW1lIjoxNTc5NzE1NDk0fQ.twS8T8qY1-3EO99qdlMfk_JZ4CTOgygh0ucV01DLLxE

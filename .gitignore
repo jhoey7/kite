@@ -1,0 +1,7 @@
+/application/config/database.php
+/assets/images/logo.png
+index.php
+/application/views/login.php
+*.xls
+/application/controllers/Client.php
+/application/controllers/api/*
